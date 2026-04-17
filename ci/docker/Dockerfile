@@ -136,7 +136,7 @@ ENV PATH=/usr/local/go/bin:${PATH}
 ENV PATH ${GEM_HOME}/bin:${GEM_HOME}/gems/bin:${PATH}
 ENV BUNDLE_APP_CONFIG ${GEM_HOME}
 RUN cd /tmp  \
-    && curl --show-error -sL "${RUBY_INSTALL_URL}" -o ruby-install.tar.gz \
+    && curl -fsSL "${RUBY_INSTALL_URL}" -o ruby-install.tar.gz \
     && echo "${RUBY_INSTALL_SHA256}  ruby-install.tar.gz" | sha256sum -c - \
     && tar -xzf ruby-install.tar.gz \
     && rm ruby-install.tar.gz \
@@ -155,18 +155,18 @@ RUN cd /tmp  \
 
 
 RUN bosh_cli_path="/usr/bin/bosh" \
-    && curl --show-error -sL "${BOSH_CLI_URL}" > "${bosh_cli_path}" \
+    && curl -fsSL "${BOSH_CLI_URL}" > "${bosh_cli_path}" \
     && echo "${BOSH_CLI_SHA256}  ${bosh_cli_path}" | sha256sum -c - \
     && chmod +x "${bosh_cli_path}"
 
 RUN meta4_cli_path="/usr/local/bin/meta4" \
-    && curl --show-error -sL "${META4_CLI_URL}" > "${meta4_cli_path}" \
+    && curl -fsSL "${META4_CLI_URL}" > "${meta4_cli_path}" \
     && echo "${META4_CLI_SHA256}  ${meta4_cli_path}" | sha256sum -c - \
     && chmod +x "${meta4_cli_path}"
 
 RUN cd /tmp \
     && golangci_lint_path="/usr/local/bin/golangci-lint" \
-    && curl --show-error -sL "${GOLANGCI_LINT_INSTALL_URL}" -o golangci-lint.tar.gz \
+    && curl -fsSL "${GOLANGCI_LINT_INSTALL_URL}" -o golangci-lint.tar.gz \
     && echo "${GOLANGCI_LINT_INSTALL_SHA256}  golangci-lint.tar.gz" | sha256sum -c - \
     && tar -xzf golangci-lint.tar.gz \
     && rm golangci-lint.tar.gz \
@@ -176,7 +176,7 @@ RUN cd /tmp \
 
 RUN cd /tmp \
     && govc_path="/usr/local/bin/govc" \
-    && curl --show-error -sL "${GOVC_INSTALL_URL}" -o govc.tar.gz \
+    && curl -fsSL "${GOVC_INSTALL_URL}" -o govc.tar.gz \
     && echo "${GOVC_INSTALL_SHA256}  govc.tar.gz" | sha256sum -c - \
     && tar -xzf govc.tar.gz govc \
     && rm govc.tar.gz \
@@ -184,7 +184,7 @@ RUN cd /tmp \
     && chmod +x "${govc_path}"
 
 RUN yq_cli_path="/usr/local/bin/yq" \
-    && curl --show-error -sL "${YQ_CLI_URL}" > "${yq_cli_path}" \
+    && curl -fsSL "${YQ_CLI_URL}" > "${yq_cli_path}" \
     && echo "${YQ_CLI_SHA256}  ${yq_cli_path}" | sha256sum -c - \
     && chmod +x "${yq_cli_path}"
 

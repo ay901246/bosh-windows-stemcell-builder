@@ -5,6 +5,9 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DEPS_FILE="${SCRIPT_DIR}/../docker/dependencies.json"
 
+TMP_FILE=$(mktemp)
+trap 'rm -f "${TMP_FILE}"' EXIT
+
 if ! command -v jq &> /dev/null; then
     echo "Error: jq is required but not installed." >&2
     exit 1
@@ -24,7 +27,7 @@ get_latest_asset() {
 
 get_sha256() {
   local url=$1
-  curl -sL "${url}" | sha256sum | awk '{print $1}'
+  curl -fsSL "${url}" | sha256sum | awk '{print $1}'
 }
 
 update_dep() {
@@ -55,11 +58,8 @@ update_dep() {
   sha=$(get_sha256 "${url}")
   
   echo "  Updating ${DEPS_FILE}..."
-  # Create a temporary file to hold the updated JSON
-  local tmp_file
-  tmp_file=$(mktemp)
-  jq ".${key}.url = \"${url}\" | .${key}.sha256 = \"${sha}\"" "${DEPS_FILE}" > "${tmp_file}"
-  mv "${tmp_file}" "${DEPS_FILE}"
+  jq ".${key}.url = \"${url}\" | .${key}.sha256 = \"${sha}\"" "${DEPS_FILE}" > "${TMP_FILE}"
+  mv "${TMP_FILE}" "${DEPS_FILE}"
   echo "  Done."
 }
 
