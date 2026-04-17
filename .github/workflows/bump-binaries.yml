@@ -1,0 +1,36 @@
+name: Bump Binaries
+
+on:
+  schedule:
+    - cron: '0 4 * * 1' # Run every Monday at 4:00 AM UTC
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  bump-binaries:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup jq
+        run: sudo apt-get install -y jq
+
+      - name: Run bump script
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ./ci/scripts/bump-binaries.sh
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Update binary dependencies in dependencies.json"
+          title: "Update binary dependencies"
+          body: |
+            This PR automatically updates the binary dependencies in `ci/docker/dependencies.json`.
+            
+            This ensures that the CI image is always built with the latest versions of these tools while maintaining security via SHA-256 verification.
+          branch: "bump-binaries"
+          base: "windows-2019"
+          delete-branch: true
