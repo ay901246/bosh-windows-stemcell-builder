@@ -8,6 +8,9 @@ on:
 jobs:
   bump-binaries:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -22,25 +25,15 @@ jobs:
           ./ci/scripts/bump-binaries.sh
 
       - name: Create Pull Request
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          
-          if git diff --quiet ci/docker/dependencies.json; then
-            echo "No changes detected. Dependencies are up to date."
-            exit 0
-          fi
-          
-          BRANCH_NAME="bump-binaries-$(date +%s)"
-          git checkout -b $BRANCH_NAME
-          git add ci/docker/dependencies.json
-          git commit -m "Update binary dependencies in dependencies.json"
-          git push origin $BRANCH_NAME
-          
-          gh pr create \
-            --title "Update binary dependencies" \
-            --body "This PR automatically updates the binary dependencies in \`ci/docker/dependencies.json\`." \
-            --base windows-2019 \
-            --head $BRANCH_NAME
+        uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c # v6.1.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Update binary dependencies in dependencies.json"
+          title: "Update binary dependencies"
+          body: |
+            This PR automatically updates the binary dependencies in `ci/docker/dependencies.json`.
+            
+            This ensures that the CI image is always built with the latest versions of these tools while maintaining security via SHA-256 verification.
+          branch: "bump-binaries"
+          base: "windows-2019"
+          delete-branch: true
