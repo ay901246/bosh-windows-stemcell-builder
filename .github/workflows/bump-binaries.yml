@@ -35,5 +35,5 @@ jobs:
             
             This ensures that the CI image is always built with the latest versions of these tools while maintaining security via SHA-256 verification.
           branch: "bump-binaries"
-          base: "windows-2019"
+          base: "test-bump-workflow"
           delete-branch: true
