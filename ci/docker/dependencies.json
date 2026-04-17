@@ -1,7 +1,7 @@
 {
   "bosh_cli": {
-    "url": "https://github.com/cloudfoundry/bosh-cli/releases/download/v7.0.0/bosh-cli-7.0.0-linux-amd64",
-    "sha256": "f72f3331ad2aeb8ae792bff24a121103f4a8814f9193f59be223e2d70cd2988f"
+    "url": "https://github.com/cloudfoundry/bosh-cli/releases/download/v7.10.2/bosh-cli-7.10.2-linux-amd64",
+    "sha256": "d9a52693994bdefc2fc73f1fe16042ffed48c6931308c6a9ae3520413d73065c"
   },
   "meta4_cli": {
     "url": "https://github.com/dpb587/metalink/releases/download/v0.5.0/meta4-0.5.0-linux-amd64",
